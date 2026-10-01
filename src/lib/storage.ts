@@ -5,13 +5,16 @@ const KEY = 'padel-holo:cards:v1';
 
 /** Starter cards for first-time visitors; regenerate with scripts/import-seed.mjs. */
 export function loadCards(): PlayerCard[] {
+  let cards: PlayerCard[] | null = null;
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) cards = JSON.parse(raw);
   } catch {
     // fall through to the starter cards
   }
-  return seed.length ? (seed as PlayerCard[]) : [demoCard()];
+  cards ??= seed.length ? (seed as PlayerCard[]) : [demoCard()];
+  // Cards saved before foil textures existed.
+  return cards.map((c) => ({ ...c, foil: c.foil ?? 'court' }));
 }
 
 /** Returns false when the browser refuses to store (usually quota exceeded). */

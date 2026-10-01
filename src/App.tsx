@@ -76,7 +76,7 @@ export default function App() {
       {openCard && (
         <Showcase
           card={openCard}
-          onChangeEffect={(effect) => upsert({ ...openCard, effect })}
+          onChange={upsert}
           onClose={() => setOpenId(null)}
         />
       )}

@@ -4,6 +4,7 @@ import { resizeImage } from '../lib/storage';
 import {
   CATEGORIES,
   EFFECTS,
+  FOILS,
   POSITION_LABELS,
   STAT_LABELS,
   overall,
@@ -140,6 +141,23 @@ export function CardEditor({ initial, onSave, onCancel }: Props) {
               </button>
             ))}
           </div>
+        </section>
+
+        <section className="panel">
+          <h3>Textura do foil</h3>
+          <div className="foils">
+            {FOILS.map((f) => (
+              <button
+                type="button"
+                key={f.id}
+                className={`chip${card.foil === f.id ? ' is-active' : ''}`}
+                onClick={() => set('foil', f.id)}
+              >
+                {f.name}
+              </button>
+            ))}
+          </div>
+          <p className="hint">O padrão gravado em relevo, que brilha mais quando a luz bate</p>
         </section>
 
         {error && <p className="error">{error}</p>}

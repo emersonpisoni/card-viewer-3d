@@ -131,6 +131,15 @@ button {
   font-size: 13px;
   font-weight: 600;
 }
+.chip--small {
+  padding: 5px 11px;
+  font-size: 12px;
+}
+.foils {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .chip.is-active {
   background: var(--accent);
   color: var(--accent-ink);
@@ -372,7 +381,7 @@ button {
   max-width: 100%;
 }
 .showcase__card {
-  width: min(420px, 86vw, calc((100dvh - 190px) * 63 / 88));
+  width: min(420px, 86vw, calc((100dvh - 250px) * 63 / 88));
   animation: card-pop 0.6s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 .showcase__effects {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { HoloCard } from './HoloCard';
-import { EFFECTS, type HoloEffect, type PlayerCard } from '../lib/types';
+import { EFFECTS, FOILS, type PlayerCard } from '../lib/types';
 
 interface Props {
   card: PlayerCard;
-  onChangeEffect: (effect: HoloEffect) => void;
+  onChange: (card: PlayerCard) => void;
   onClose: () => void;
 }
 
@@ -12,8 +12,9 @@ type OrientationPermission = { requestPermission?: () => Promise<'granted' | 'de
 
 const hasGyro = typeof window !== 'undefined' && 'DeviceOrientationEvent' in window && 'ontouchstart' in window;
 
-export function Showcase({ card, onChangeEffect, onClose }: Props) {
+export function Showcase({ card, onChange, onClose }: Props) {
   const [gyro, setGyro] = useState(false);
+  const [flipped, setFlipped] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -37,20 +38,34 @@ export function Showcase({ card, onChangeEffect, onClose }: Props) {
     <div className="showcase" onClick={onClose}>
       <div className="showcase__stage" onClick={(e) => e.stopPropagation()}>
         <div className="showcase__card">
-          <HoloCard card={card} autoplay gyro={gyro} captureTouch />
+          <HoloCard card={card} autoplay gyro={gyro} flipped={flipped} captureTouch onClick={() => setFlipped((f) => !f)} />
         </div>
         <div className="showcase__effects">
           {EFFECTS.map((fx) => (
             <button
               key={fx.id}
               className={`chip${card.effect === fx.id ? ' is-active' : ''}`}
-              onClick={() => onChangeEffect(fx.id)}
+              onClick={() => onChange({ ...card, effect: fx.id })}
             >
               {fx.name}
             </button>
           ))}
         </div>
+        <div className="showcase__effects">
+          {FOILS.map((f) => (
+            <button
+              key={f.id}
+              className={`chip chip--small${card.foil === f.id ? ' is-active' : ''}`}
+              onClick={() => onChange({ ...card, foil: f.id })}
+            >
+              {f.name}
+            </button>
+          ))}
+        </div>
         <div className="showcase__actions">
+          <button className="btn btn--ghost" onClick={() => setFlipped((f) => !f)}>
+            Virar card
+          </button>
           {hasGyro && (
             <button className="btn btn--ghost" onClick={toggleGyro}>
               {gyro ? 'Desligar giroscópio' : 'Mexer com o celular'}

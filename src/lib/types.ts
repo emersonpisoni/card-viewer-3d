@@ -8,6 +8,8 @@ export type HoloEffect =
   | 'gold'
   | 'rainbow';
 
+export type FoilPattern = 'none' | 'court' | 'balls' | 'diamonds' | 'waves' | 'stars';
+
 export type Position = 'drive' | 'reves' | 'ambos';
 export type Hand = 'destro' | 'canhoto';
 export type Tier = 'bronze' | 'prata' | 'ouro' | 'elite';
@@ -38,6 +40,7 @@ export interface PlayerCard {
   photoY: number;
   photoZoom: number;
   effect: HoloEffect;
+  foil: FoilPattern;
   stats: Stats;
   createdAt: number;
 }
@@ -72,6 +75,15 @@ export const EFFECTS: { id: HoloEffect; name: string; description: string }[] = 
   { id: 'rainbow', name: 'Rainbow', description: 'Secret rare arco-íris' },
 ];
 
+export const FOILS: { id: FoilPattern; name: string }[] = [
+  { id: 'court', name: 'Quadra' },
+  { id: 'balls', name: 'Bolinhas' },
+  { id: 'diamonds', name: 'Losangos' },
+  { id: 'waves', name: 'Ondas' },
+  { id: 'stars', name: 'Estrelas' },
+  { id: 'none', name: 'Liso' },
+];
+
 export function overall(stats: Stats): number {
   const values = Object.values(stats);
   return Math.round(values.reduce((a, b) => a + b, 0) / values.length);
@@ -99,6 +111,7 @@ export function newCard(): PlayerCard {
     photoY: 30,
     photoZoom: 1,
     effect: 'holo',
+    foil: 'court',
     stats: {
       saque: 70,
       voleio: 70,

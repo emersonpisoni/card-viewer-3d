@@ -12,6 +12,7 @@ npm run dev
 
 - `src/lib/motion.ts` — física de mola. Escreve variáveis CSS (`--rotate-x`, `--pointer-x`, `--background-x`, …) direto no elemento, sem re-render do React.
 - `src/components/effects.css` — os 8 efeitos (Básico, Holo, Reverse, Radiante, Glitter, Cosmos, Ouro, Rainbow), todos em CSS puro com gradientes, `mix-blend-mode` e ruído SVG.
+- `src/lib/textures.ts` — texturas de foil geradas em SVG (quadra, bolinhas, losangos, ondas, estrelas) + grão de metal escovado. A gravação serve de máscara para o brilho e de mapa de altura para o relevo (sombra e realce deslocados conforme a luz).
 - `src/components/HoloCard.css` — layout do card; tudo dimensionado em `cqw`, então o card escala de miniatura até tela cheia.
 - Raridade da moldura (Bronze / Prata / Ouro / Elite) vem do OVR = média dos 8 atributos.
 - Os dados ficam no `localStorage` (as fotos são reduzidas para 900px).
