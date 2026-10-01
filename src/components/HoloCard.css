@@ -1,0 +1,312 @@
+/* Card geometry. Children size themselves in cqw so the card scales as one piece. */
+.card {
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --pointer-from-center: 0;
+  --pointer-from-left: 0.5;
+  --pointer-from-top: 0.5;
+  --card-opacity: 0;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --background-x: 50%;
+  --background-y: 50%;
+
+  --radius: 4.6cqw;
+  /* The photo window. effects.css masks against these same numbers. */
+  --win-top: 4.5%;
+  --win-left: 4.5%;
+  --win-w: 91%;
+  --win-h: 52%;
+
+  position: relative;
+  width: 100%;
+  aspect-ratio: 63 / 88;
+  container-type: inline-size;
+  perspective: 700px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card[data-tier='bronze'] {
+  --tier-1: #7a4a22;
+  --tier-2: #e3a86b;
+  --tier-3: #4a2a10;
+  --tier-glow: 227 168 107;
+}
+.card[data-tier='prata'] {
+  --tier-1: #8a95a3;
+  --tier-2: #f2f5f8;
+  --tier-3: #4b5560;
+  --tier-glow: 200 215 230;
+}
+.card[data-tier='ouro'] {
+  --tier-1: #b8860b;
+  --tier-2: #ffe28a;
+  --tier-3: #6e4c00;
+  --tier-glow: 255 210 90;
+}
+.card[data-tier='elite'] {
+  --tier-1: #d7ff3a;
+  --tier-2: #3ae7ff;
+  --tier-3: #7b3cff;
+  --tier-glow: 160 255 120;
+}
+
+.card__rotator {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  transform: rotateY(var(--rotate-x)) rotateX(var(--rotate-y));
+  transform-style: preserve-3d;
+  will-change: transform;
+  box-shadow:
+    0 2cqw 6cqw -1cqw rgb(0 0 0 / 0.6),
+    0 0 calc(var(--card-opacity) * 9cqw) calc(var(--card-opacity) * 1cqw) rgb(var(--tier-glow) / 0.45);
+}
+
+.card__front {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(
+      135deg,
+      var(--tier-2) 0%,
+      var(--tier-1) 30%,
+      var(--tier-3) 55%,
+      var(--tier-1) 75%,
+      var(--tier-2) 100%
+    );
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #fff;
+}
+
+.card__inner {
+  position: absolute;
+  inset: 2.2cqw;
+  border-radius: calc(var(--radius) - 1.6cqw);
+  background:
+    /* faint padel court lines */
+    linear-gradient(90deg, transparent 49.6%, rgb(255 255 255 / 0.05) 49.6% 50.4%, transparent 50.4%),
+    linear-gradient(0deg, transparent 72%, rgb(255 255 255 / 0.05) 72% 72.6%, transparent 72.6%),
+    radial-gradient(120% 70% at 50% 100%, #12305a 0%, transparent 70%),
+    linear-gradient(180deg, #0d1628 0%, #070b14 100%);
+}
+
+.card__photo {
+  position: absolute;
+  top: var(--win-top);
+  left: var(--win-left);
+  width: var(--win-w);
+  height: var(--win-h);
+  border-radius: 2.4cqw;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1c3a6b, #0b1426);
+  box-shadow:
+    inset 0 0 0 0.5cqw rgb(var(--tier-glow) / 0.55),
+    0 0 0 0.4cqw rgb(0 0 0 / 0.4);
+}
+.card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.card__photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(0 0 0 / 0.35) 0%, transparent 28%, transparent 70%, rgb(0 0 0 / 0.55) 100%);
+  pointer-events: none;
+}
+
+.card__placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 34cqw;
+  color: rgb(255 255 255 / 0.12);
+  background:
+    radial-gradient(circle at 50% 35%, rgb(var(--tier-glow) / 0.35), transparent 60%),
+    linear-gradient(160deg, #1c3a6b, #0b1426);
+}
+
+.card__badge {
+  position: absolute;
+  z-index: 1;
+  top: 2.5cqw;
+  left: 3.2cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.85;
+  text-shadow: 0 0.5cqw 1.5cqw rgb(0 0 0 / 0.7);
+}
+.card__ovr {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17cqw;
+  color: var(--tier-2);
+}
+.card__pos {
+  font-size: 3.4cqw;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card__cat {
+  position: absolute;
+  z-index: 1;
+  top: 3.2cqw;
+  right: 3.2cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2cqw 2cqw;
+  border-radius: 1.6cqw;
+  background: rgb(0 0 0 / 0.45);
+  backdrop-filter: blur(4px);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 6.5cqw;
+  line-height: 0.9;
+}
+.card__cat span {
+  font-family: 'Inter', sans-serif;
+  font-size: 2.4cqw;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  opacity: 0.75;
+}
+
+.card__name {
+  position: absolute;
+  top: 57.5%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 0 6cqw;
+}
+.card__name h2 {
+  margin: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  font-size: 9.5cqw;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__name p {
+  margin: 0.4cqw 0 0;
+  font-size: 3.2cqw;
+  font-style: italic;
+  color: var(--tier-2);
+  opacity: 0.9;
+}
+
+.card__stats {
+  position: absolute;
+  top: 70%;
+  left: 9cqw;
+  right: 9cqw;
+  margin: 0;
+  padding: 1.8cqw 0 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  row-gap: 1.6cqw;
+  border-top: 0.35cqw solid rgb(var(--tier-glow) / 0.4);
+}
+.card__stats li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+.card__stats b {
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  font-size: 7.4cqw;
+}
+.card__stats span {
+  font-size: 2.6cqw;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+.card__footer {
+  position: absolute;
+  bottom: 4.2cqw;
+  left: 6cqw;
+  right: 6cqw;
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  font-size: 2.6cqw;
+  font-weight: 600;
+}
+.card__tier {
+  padding: 0.6cqw 1.8cqw;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--tier-1), var(--tier-2));
+  color: #111;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.card__meta {
+  flex: 1;
+  text-align: center;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__hand {
+  display: grid;
+  place-items: center;
+  width: 4.6cqw;
+  height: 4.6cqw;
+  border-radius: 50%;
+  border: 0.35cqw solid var(--tier-2);
+  font-weight: 800;
+}
+
+/* Light layers; each effect styles them in effects.css. */
+.card__shine,
+.card__tint,
+.card__glare {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  pointer-events: none;
+}
+.card__shine {
+  z-index: 3;
+  mix-blend-mode: color-dodge;
+  opacity: var(--card-opacity);
+}
+.card__tint {
+  z-index: 4;
+  display: none;
+}
+.card__glare {
+  z-index: 5;
+  mix-blend-mode: overlay;
+  opacity: calc(var(--card-opacity) * 0.9);
+  background-image: radial-gradient(
+    farthest-corner circle at var(--pointer-x) var(--pointer-y),
+    rgb(255 255 255 / 0.75) 8%,
+    rgb(255 255 255 / 0.45) 22%,
+    rgb(0 0 0 / 0.5) 90%
+  );
+}
