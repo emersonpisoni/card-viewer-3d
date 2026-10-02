@@ -1,0 +1,181 @@
+.book-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.book {
+  position: relative;
+  display: grid;
+  width: 100%;
+  perspective: 2400px;
+  touch-action: pan-y;
+  user-select: none;
+}
+/* As large as the screen allows: full width, but never taller than the
+   viewport (two pages side by side are 2 × 0.72 as wide as they are tall). */
+.book--spread {
+  grid-template-columns: 1fr 1fr;
+  max-width: max(640px, calc((100dvh - 170px) * 1.44));
+  filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.55));
+}
+.book--single {
+  grid-template-columns: 1fr;
+  max-width: min(600px, calc((100dvh - 170px) * 0.72));
+  filter: drop-shadow(0 20px 30px rgb(0 0 0 / 0.5));
+}
+
+.book__half {
+  min-width: 0;
+}
+
+/* Shadow where the pages meet the binding. */
+.book__spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 60px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(0 0 0 / 0.35) 40%,
+    rgb(0 0 0 / 0.55) 50%,
+    rgb(0 0 0 / 0.35) 60%,
+    transparent
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ---------- Turning leaf ---------- */
+.leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 4;
+  transform-style: preserve-3d;
+  animation-duration: 0.9s;
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.3, 1);
+  animation-fill-mode: forwards;
+}
+.book--spread .leaf {
+  width: 50%;
+}
+.book--spread .leaf--fwd {
+  left: 50%;
+  transform-origin: left center;
+  animation-name: leaf-fwd;
+}
+.book--spread .leaf--bwd {
+  left: 0;
+  transform-origin: right center;
+  animation-name: leaf-bwd;
+}
+.leaf--single {
+  left: 0;
+  width: 100%;
+  transform-origin: left center;
+}
+.leaf--single.leaf--fwd {
+  animation-name: leaf-fwd;
+}
+.leaf--single.leaf--in {
+  animation-name: leaf-in;
+}
+
+.leaf__face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.leaf__back {
+  transform: rotateY(180deg);
+}
+.leaf__face > .book-page {
+  height: 100%;
+}
+/* The page darkens as it lifts and catches light as it lands. */
+.leaf__face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgb(0 0 0 / 0.5), rgb(255 255 255 / 0.08) 60%, rgb(0 0 0 / 0.3));
+  opacity: 0;
+  pointer-events: none;
+  animation: leaf-shade 0.9s ease-in-out;
+}
+
+@keyframes leaf-fwd {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-180deg);
+  }
+}
+@keyframes leaf-bwd {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+@keyframes leaf-in {
+  from {
+    transform: rotateY(-180deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+@keyframes leaf-shade {
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ---------- Pages ---------- */
+.book-page {
+  position: relative;
+  width: 100%;
+  /* Fits a 2×2 grid of cards (63:88) plus margins. */
+  aspect-ratio: 0.72;
+  overflow: hidden;
+  container-type: inline-size;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgb(255 255 255 / 0.05), transparent 60%),
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.015) 0 2px, transparent 2px 4px),
+    linear-gradient(160deg, #1a2440, #0f1629);
+}
+.book-page--left {
+  border-radius: 14px 4px 4px 14px;
+  box-shadow: inset -24px 0 30px -20px rgb(0 0 0 / 0.6);
+}
+.book-page--right {
+  border-radius: 4px 14px 14px 4px;
+  box-shadow: inset 24px 0 30px -20px rgb(0 0 0 / 0.6);
+}
+.book--single .book-page {
+  border-radius: 6px 14px 14px 6px;
+}
+.book-page--blank {
+  background: linear-gradient(160deg, #182038, #0e1426);
+}
+
+.book__nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+.book__nav .icon-btn {
+  font-size: 24px;
+}

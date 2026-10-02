@@ -1,26 +1,29 @@
 # Padel Holo
 
-Cards holográficos de jogadores de padel, inspirados em [poke-holo](https://poke-holo.simey.me/).
-O jogador sobe a foto, preenche os atributos e escolhe o efeito holo; o card reage à luz conforme o mouse, o dedo ou o giroscópio do celular.
+Rede social de resenha de padel com coleção de cartas. Ganhou a partida? Você captura as cartas holográficas da dupla adversária, abre o pacote e guarda no álbum. Os atributos de cada jogador vêm só das avaliações dos outros: ninguém cria a própria carta.
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Como funciona
+## Regras
+- **Registrar partida** cria um post no feed. Cada vencedor ganha um pacote com uma cópia da carta de cada perdedor, com os atributos congelados no dia do jogo.
+- **Raridade da carta capturada:** Edição Pneu (teve 6/0) > Radiante (virada) > Holo (venceu dupla de OVR maior) > Comum. Só vale depois que um perdedor confirma a derrota; até lá a carta aparece como Comum.
+- **Rookie:** a primeira carta de um jogador capturada por qualquer pessoa.
+- **Atributos** = média da última avaliação de cada usuário. Qualquer usuário avalia qualquer jogador, menos a si mesmo.
+- **Efeito da carta do jogador** vem do nível: Bronze → básico, Prata → holo, Ouro → ouro, Elite → cosmos.
+- Jogador que não está no app entra como **provisório**: dá para capturar, mas não confirma derrota até entrar.
 
-- `src/lib/motion.ts` — física de mola. Escreve variáveis CSS (`--rotate-x`, `--pointer-x`, `--background-x`, …) direto no elemento, sem re-render do React.
-- `src/components/effects.css` — os 8 efeitos (Básico, Holo, Reverse, Radiante, Glitter, Cosmos, Ouro, Rainbow), todos em CSS puro com gradientes, `mix-blend-mode` e ruído SVG.
-- `src/lib/textures.ts` — texturas de foil geradas em SVG (quadra, bolinhas, losangos, ondas, estrelas) + grão de metal escovado. A gravação serve de máscara para o brilho e de mapa de altura para o relevo (sombra e realce deslocados conforme a luz).
-- `src/components/HoloCard.css` — layout do card; tudo dimensionado em `cqw`, então o card escala de miniatura até tela cheia.
-- Raridade da moldura (Bronze / Prata / Ouro / Elite) vem do OVR = média dos 8 atributos.
-- Os dados ficam no `localStorage` (as fotos são reduzidas para 900px).
+## Código
+- `src/lib/types.ts`, `rules.ts` — modelo e regras do jogo (raridade, OVR, cartas).
+- `src/lib/db.ts` — operações puras sobre os dados; é o contrato do futuro backend.
+- `src/lib/store.ts` — store local (localStorage) com seed de demonstração em `seed.ts`. A barra "Modo demo" troca o usuário logado.
+- `src/components/HoloCard.*`, `effects.css`, `src/lib/motion.ts`, `textures.ts` — a carta holográfica (física de mola, efeitos, foil em relevo).
+- `src/components/PackOpening.*` — abertura de pacote; `Book.*` — álbum com virada de página 3D.
+- `src/screens/` — Resenha (feed), Coleção (Álbum, Grade, Lista, Vitrine) e Perfil.
 
-## Roadmap
-
-1. Backend + login (Supabase/Firebase) e link público `/p/<usuario>` para compartilhar o card.
-2. Exportar PNG/vídeo curto do card brilhando para stories.
-3. Atributos validados: autoavaliação + votos de parceiros/adversários, ou integração com rankings/torneios.
-4. Evolução do card com resultados de partidas; efeitos desbloqueáveis por conquistas.
-5. Monetização: efeitos premium, card físico impresso holográfico, cards oficiais para clubes/torneios.
+## Próximos passos
+1. Backend (Supabase): login, dados compartilhados, convite e reivindicação de carta provisória.
+2. Revanche com aposta de carta, card da vergonha, apelidos votados.
+3. Resenha semanal em imagem para o WhatsApp; temporadas e missões.

@@ -14,6 +14,9 @@ export type Position = 'drive' | 'reves' | 'ambos';
 export type Hand = 'destro' | 'canhoto';
 export type Tier = 'bronze' | 'prata' | 'ouro' | 'elite';
 
+/** How a captured copy was won. Drives the holo effect of the copy. */
+export type Rarity = 'comum' | 'holo' | 'radiante' | 'pneu';
+
 export interface Stats {
   saque: number;
   voleio: number;
@@ -25,7 +28,8 @@ export interface Stats {
   fisico: number;
 }
 
-export interface PlayerCard {
+/** A person. Their stats are never stored here: they come from Ratings. */
+export interface Player {
   id: string;
   name: string;
   nickname: string;
@@ -39,10 +43,110 @@ export interface PlayerCard {
   photoX: number;
   photoY: number;
   photoZoom: number;
-  effect: HoloEffect;
   foil: FoilPattern;
+  /** False for provisional players created by someone else until they join. */
+  claimed: boolean;
+  createdBy?: string;
+  createdAt: number;
+}
+
+/** One user's evaluation of another player. Only the latest per (from, to) counts. */
+export interface Rating {
+  id: string;
+  from: string;
+  to: string;
   stats: Stats;
   createdAt: number;
+}
+
+export type Team = [string, string];
+export type SetScore = [number, number];
+
+export interface Match {
+  id: string;
+  createdBy: string;
+  createdAt: number;
+  playedAt: number;
+  club: string;
+  teamA: Team;
+  teamB: Team;
+  /** Games per set, [teamA, teamB]. */
+  sets: SetScore[];
+  winner: 'A' | 'B';
+  /** A loser has acknowledged the result (or a loser registered it). */
+  confirmed: boolean;
+}
+
+/** A card one player captured from another by beating them. */
+export interface CardCopy {
+  id: string;
+  ownerId: string;
+  playerId: string;
+  matchId: string;
+  capturedAt: number;
+  /** The player's stats on the day of the match; null if nobody had rated them yet. */
+  stats: Stats | null;
+  rarity: Rarity;
+  /** First copy of this player ever captured by anyone. */
+  rookie: boolean;
+}
+
+export interface Pack {
+  id: string;
+  ownerId: string;
+  matchId: string;
+  copyIds: string[];
+  openedAt?: number;
+}
+
+export interface Reaction {
+  matchId: string;
+  userId: string;
+  emoji: string;
+}
+
+export interface Comment {
+  id: string;
+  matchId: string;
+  userId: string;
+  text: string;
+  createdAt: number;
+}
+
+export interface DB {
+  version: 2;
+  currentUserId: string;
+  players: Player[];
+  ratings: Rating[];
+  matches: Match[];
+  copies: CardCopy[];
+  packs: Pack[];
+  reactions: Reaction[];
+  comments: Comment[];
+}
+
+/** Everything HoloCard needs to draw one card face. */
+export interface CardView {
+  name: string;
+  nickname: string;
+  position: Position;
+  hand: Hand;
+  category: string;
+  club: string;
+  city: string;
+  racket: string;
+  photo?: string;
+  photoX: number;
+  photoY: number;
+  photoZoom: number;
+  foil: FoilPattern;
+  effect: HoloEffect;
+  stats: Stats | null;
+  ratingCount?: number;
+  provisional?: boolean;
+  rookie?: boolean;
+  rarity?: Rarity;
+  capture?: { at: number; score: string };
 }
 
 export const STAT_LABELS: Record<keyof Stats, { short: string; long: string }> = {
@@ -56,6 +160,8 @@ export const STAT_LABELS: Record<keyof Stats, { short: string; long: string }> =
   fisico: { short: 'FIS', long: 'Físico' },
 };
 
+export const STAT_KEYS = Object.keys(STAT_LABELS) as (keyof Stats)[];
+
 export const POSITION_LABELS: Record<Position, string> = {
   drive: 'Drive',
   reves: 'Revés',
@@ -63,17 +169,6 @@ export const POSITION_LABELS: Record<Position, string> = {
 };
 
 export const CATEGORIES = ['1ª', '2ª', '3ª', '4ª', '5ª', '6ª', '7ª', 'Iniciante'];
-
-export const EFFECTS: { id: HoloEffect; name: string; description: string }[] = [
-  { id: 'basic', name: 'Básico', description: 'Só o reflexo da luz' },
-  { id: 'holo', name: 'Holo', description: 'Arco-íris clássico na foto' },
-  { id: 'reverse', name: 'Reverse', description: 'Brilho na moldura, foto limpa' },
-  { id: 'radiant', name: 'Radiante', description: 'Trama cruzada metálica' },
-  { id: 'glitter', name: 'Glitter', description: 'Purpurina que cintila' },
-  { id: 'cosmos', name: 'Cosmos', description: 'Galáxia com estrelas' },
-  { id: 'gold', name: 'Ouro', description: 'Folha de ouro + brilho' },
-  { id: 'rainbow', name: 'Rainbow', description: 'Secret rare arco-íris' },
-];
 
 export const FOILS: { id: FoilPattern; name: string }[] = [
   { id: 'court', name: 'Quadra' },
@@ -84,44 +179,18 @@ export const FOILS: { id: FoilPattern; name: string }[] = [
   { id: 'none', name: 'Liso' },
 ];
 
-export function overall(stats: Stats): number {
-  const values = Object.values(stats);
-  return Math.round(values.reduce((a, b) => a + b, 0) / values.length);
-}
+export const RARITIES: Record<Rarity, { name: string; effect: HoloEffect; rank: number; hint: string }> = {
+  comum: { name: 'Comum', effect: 'basic', rank: 0, hint: 'Vitória' },
+  holo: { name: 'Holo', effect: 'holo', rank: 1, hint: 'Venceu uma dupla mais forte' },
+  radiante: { name: 'Radiante', effect: 'radiant', rank: 2, hint: 'Vitória de virada' },
+  pneu: { name: 'Edição Pneu', effect: 'rainbow', rank: 3, hint: 'Teve set 6/0' },
+};
 
-export function tierFor(ovr: number): Tier {
-  if (ovr >= 85) return 'elite';
-  if (ovr >= 75) return 'ouro';
-  if (ovr >= 60) return 'prata';
-  return 'bronze';
-}
-
-export function newCard(): PlayerCard {
-  return {
-    id: crypto.randomUUID(),
-    name: '',
-    nickname: '',
-    position: 'drive',
-    hand: 'destro',
-    category: '4ª',
-    club: '',
-    city: '',
-    racket: '',
-    photoX: 50,
-    photoY: 30,
-    photoZoom: 1,
-    effect: 'holo',
-    foil: 'court',
-    stats: {
-      saque: 70,
-      voleio: 70,
-      bandeja: 70,
-      vibora: 70,
-      smash: 70,
-      lob: 70,
-      defesa: 70,
-      fisico: 70,
-    },
-    createdAt: Date.now(),
-  };
-}
+export const REACTIONS = [
+  { emoji: '🧱', label: 'Paredão' },
+  { emoji: '🥖', label: 'Pneu' },
+  { emoji: '🐔', label: 'Amarelou' },
+  { emoji: '🎯', label: 'Víbora' },
+  { emoji: '🔥', label: 'Jogão' },
+  { emoji: '😂', label: 'Kkkk' },
+];

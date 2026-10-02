@@ -1,0 +1,400 @@
+.collection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.collection__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.collection__header h1 {
+  margin: 0;
+}
+.collection__header p {
+  margin: 4px 0 10px;
+  color: var(--muted);
+}
+.progress {
+  width: min(320px, 70vw);
+  height: 6px;
+  border-radius: 99px;
+  background: rgb(255 255 255 / 0.08);
+  overflow: hidden;
+}
+.progress div {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #3ae7ff);
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.segmented button {
+  border: 0;
+  background: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.segmented button.is-active {
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.06) inset;
+}
+@media (max-width: 520px) {
+  .segmented {
+    width: 100%;
+  }
+  .segmented button {
+    flex: 1;
+    padding: 8px 6px;
+  }
+}
+
+/* ---------- Album cover ---------- */
+.album-cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2cqw;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 30%, rgb(215 255 58 / 0.18), transparent 40%),
+    repeating-linear-gradient(135deg, rgb(255 255 255 / 0.03) 0 3cqw, transparent 3cqw 6cqw),
+    linear-gradient(160deg, #24407c, #0b1430 75%);
+}
+.album-cover__shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.12) 45%, rgb(160 220 255 / 0.18) 50%, transparent 65%);
+  background-size: 300% 100%;
+  animation: cover-shine 6s ease-in-out infinite;
+  pointer-events: none;
+}
+.album-cover__ball {
+  width: 18cqw;
+  height: 18cqw;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #f4ff9a, #d7ff3a 45%, #9cbf0a);
+  box-shadow: 0 0 10cqw rgb(215 255 58 / 0.4);
+}
+.album-cover__season {
+  margin: 2cqw 0 0;
+  font-size: 3cqw;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.album-cover h2 {
+  margin: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  font-size: 15cqw;
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1cqw 3cqw rgb(0 0 0 / 0.5);
+}
+.album-cover__owner {
+  margin: 2cqw 0 0;
+  padding: 1cqw 4cqw;
+  border-radius: 99px;
+  border: 0.3cqw solid rgb(255 255 255 / 0.3);
+  font-size: 4cqw;
+  font-weight: 700;
+}
+.album-cover__stats {
+  margin: 0;
+  font-size: 3.2cqw;
+  color: var(--muted);
+}
+.album-cover__hint {
+  position: absolute;
+  bottom: 4cqw;
+  margin: 0;
+  font-size: 2.6cqw;
+  color: var(--muted);
+  opacity: 0.7;
+}
+@keyframes cover-shine {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0% 0;
+  }
+}
+
+/* ---------- Album page ---------- */
+.album-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3cqw 3cqw 5cqw;
+}
+.album-page__number {
+  position: absolute;
+  bottom: 1.2cqw;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.6cqw;
+  letter-spacing: 0.08em;
+  color: rgb(255 255 255 / 0.3);
+}
+.album-page__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3cqw;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1cqw;
+}
+.slot__card {
+  position: relative;
+  width: 100%;
+}
+.slot__count {
+  position: absolute;
+  top: -1.5cqw;
+  right: -1.5cqw;
+  z-index: 2;
+  padding: 0.6cqw 1.8cqw;
+  border-radius: 99px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 3.2cqw;
+  font-weight: 800;
+  box-shadow: 0 0.5cqw 1.5cqw rgb(0 0 0 / 0.5);
+}
+.slot__number {
+  position: absolute;
+  bottom: -1.2cqw;
+  left: -1.2cqw;
+  z-index: 2;
+  padding: 0.5cqw 1.4cqw;
+  border-radius: 99px;
+  background: rgb(7 11 20 / 0.85);
+  border: 1px solid var(--border);
+  font-size: 2.4cqw;
+  font-weight: 800;
+  color: var(--muted);
+}
+.slot--empty {
+  justify-content: center;
+  aspect-ratio: 63 / 88;
+  border-radius: 1.6cqw;
+  border: 0.35cqw dashed rgb(255 255 255 / 0.14);
+  background:
+    radial-gradient(circle at 50% 38%, rgb(255 255 255 / 0.05) 0 13cqw, transparent 13.2cqw),
+    rgb(0 0 0 / 0.18);
+  text-align: center;
+  color: rgb(255 255 255 / 0.4);
+}
+.slot--empty b {
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  font-size: 11cqw;
+  color: rgb(255 255 255 / 0.25);
+}
+.slot__name {
+  font-size: 4.4cqw;
+  font-weight: 700;
+}
+.slot__hint {
+  font-size: 3cqw;
+  padding: 0 2cqw;
+}
+
+/* ---------- Grade ---------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.filters__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.filters__sort {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 36px 28px;
+}
+@media (max-width: 600px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px 14px;
+  }
+}
+.card-grid__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Lista ---------- */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card-list button {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto 52px;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-align: left;
+}
+.card-list button:hover {
+  background: var(--surface-2);
+}
+.card-list__thumb {
+  width: 96px;
+}
+.card-list__name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  font-size: 17px;
+}
+.card-list__name b,
+.card-list__name span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-list__name span {
+  font-size: 13px;
+  color: var(--muted);
+}
+.card-list__ovr {
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  font-size: 40px;
+  text-align: right;
+}
+@media (max-width: 520px) {
+  .card-list button {
+    grid-template-columns: 76px minmax(0, 1fr) 40px;
+    gap: 12px;
+    padding: 10px 12px;
+  }
+  .card-list button .rarity-pill {
+    display: none;
+  }
+  .card-list__thumb {
+    width: 76px;
+  }
+  .card-list__ovr {
+    font-size: 32px;
+  }
+}
+
+/* ---------- Vitrine ---------- */
+.vitrine {
+  /* Centered card width: as tall as the screen allows. */
+  --vitrine-w: max(240px, min(440px, 80vw, calc((100dvh - 330px) * 63 / 88)));
+  display: flex;
+  gap: 28px;
+  margin: 0 calc(var(--gutter) * -1);
+  padding: 30px calc(50% - var(--vitrine-w) / 2) 40px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.vitrine::-webkit-scrollbar {
+  display: none;
+}
+.vitrine__item {
+  flex: 0 0 var(--vitrine-w);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  scroll-snap-align: center;
+}
+.vitrine__card {
+  width: 100%;
+}
+.vitrine__caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+/* Cards grow as they reach the centre, where supported. */
+@supports (animation-timeline: view()) {
+  .vitrine__item {
+    animation: vitrine-focus linear both;
+    animation-timeline: view(inline);
+  }
+  @keyframes vitrine-focus {
+    0%,
+    100% {
+      transform: scale(0.78);
+      opacity: 0.45;
+    }
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
+.copy-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+.copy-info p {
+  margin: 0;
+}
+.copy-info a {
+  color: var(--text);
+  font-weight: 700;
+}

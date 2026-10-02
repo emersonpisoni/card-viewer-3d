@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { HoloCard } from './HoloCard';
-import { EFFECTS, FOILS, type PlayerCard } from '../lib/types';
+import type { CardView } from '../lib/types';
 
 interface Props {
-  card: PlayerCard;
-  onChange: (card: PlayerCard) => void;
+  card: CardView;
   onClose: () => void;
+  /** Extra content under the card (capture info, actions). */
+  children?: ReactNode;
 }
 
 type OrientationPermission = { requestPermission?: () => Promise<'granted' | 'denied'> };
 
 const hasGyro = typeof window !== 'undefined' && 'DeviceOrientationEvent' in window && 'ontouchstart' in window;
 
-export function Showcase({ card, onChange, onClose }: Props) {
+export function Showcase({ card, onClose, children }: Props) {
   const [gyro, setGyro] = useState(false);
   const [flipped, setFlipped] = useState(false);
 
@@ -40,28 +41,7 @@ export function Showcase({ card, onChange, onClose }: Props) {
         <div className="showcase__card">
           <HoloCard card={card} autoplay gyro={gyro} flipped={flipped} captureTouch onClick={() => setFlipped((f) => !f)} />
         </div>
-        <div className="showcase__effects">
-          {EFFECTS.map((fx) => (
-            <button
-              key={fx.id}
-              className={`chip${card.effect === fx.id ? ' is-active' : ''}`}
-              onClick={() => onChange({ ...card, effect: fx.id })}
-            >
-              {fx.name}
-            </button>
-          ))}
-        </div>
-        <div className="showcase__effects">
-          {FOILS.map((f) => (
-            <button
-              key={f.id}
-              className={`chip chip--small${card.foil === f.id ? ' is-active' : ''}`}
-              onClick={() => onChange({ ...card, foil: f.id })}
-            >
-              {f.name}
-            </button>
-          ))}
-        </div>
+        {children}
         <div className="showcase__actions">
           <button className="btn btn--ghost" onClick={() => setFlipped((f) => !f)}>
             Virar card
